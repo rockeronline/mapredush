@@ -1,0 +1,75 @@
+#Civi e Andre
+import re
+
+class Document:
+
+    def __init__(self, doc):
+        self.doc = doc
+        self.freq = dict()
+        templst = re.findall("([a-z]+)", doc.lower())
+        nwords = float(len(templst))
+        for word in templst:
+            if word not in self.freq:
+                self.freq[word] = templst.count(word)/nwords
+
+    def getfreq(self):
+        return self.freq
+
+    def contains(self, word):
+        return word in self.freq
+
+    def getFreqWordInDoc(self, word):
+        if word in self.freq.keys():
+            return self.freq.get(word)
+        else:
+            return 0
+
+
+class DocumentAnalysis:
+
+    arrayDoc = []
+
+    def __init__(self, doc):
+        self.appendDocument(doc)
+
+
+    def appendDocument(self, doc):
+        self.arrayDoc.append(doc)
+
+
+    def InverseDocumentFrequency(self, word):
+        counter = 0
+        nDocs = self.nDocuments()
+        for doc in self.arrayDoc:
+            if doc.contains(word):
+                counter += 1
+        print "nDocs: " + str(nDocs)
+        print "counter: " + str(counter)
+
+        try:
+            return float(nDocs / counter)
+        except ZeroDivisionError:
+            return 0
+
+
+    def TFIDF(self, tf, word):
+        return tf * self.InverseDocumentFrequency(word)
+
+
+    def nDocuments(self):
+        return len(self.arrayDoc)
+
+
+
+
+
+'''  PROVE VARIE
+doc1 = Document("essere o non essere?")
+doc2 = Document("cosa vuol dire essere? mah 42 nel dubbio #gazzurbo")
+
+analysis = DocumentAnalysis(doc1)
+analysis.appendDocument(doc2)
+
+print "IDF: " + str(analysis.InverseDocumentFrequency("essere"))
+
+'''
